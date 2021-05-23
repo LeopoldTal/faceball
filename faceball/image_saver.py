@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 NAMED_COLOURS = {
-	'discord': (41, 43, 48),
+	'discord': (54, 57, 63),
 	'white': (255, 255, 255),
 	'black': (0, 0, 0)
 }

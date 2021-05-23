@@ -2,8 +2,8 @@ import pytest
 from faceball.image_saver import get_rgb
 
 COLOURS = [
-	(None, (41, 43, 48)),
-	('discord', (41, 43, 48)),
+	(None, (54, 57, 63)),
+	('discord', (54, 57, 63)),
 	('white', (255, 255, 255)),
 	('black', (0, 0, 0)),
 	('BLACK', (0, 0, 0)),
