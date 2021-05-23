@@ -32,12 +32,13 @@ def set_background(rgba, background_rgb):
 	rgba: OpenCV RGBA image
 	background_rgb: (int, int, int) RGB triplet
 	rgb: OpenCV RGB image"""
+	background_bgr = background_rgb[::-1]
 	alpha = rgba[:,:,3] / 255
 	
 	for colour in range(0, 3):
 		rgba[:, :, colour] = (
 			alpha * rgba[:, :, colour]
-			+ (1 - alpha) * background_rgb[colour]
+			+ (1 - alpha) * background_bgr[colour]
 		)
 	
 	return cv2.cvtColor(rgba, cv2.COLOR_RGBA2RGB)
