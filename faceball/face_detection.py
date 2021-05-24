@@ -30,11 +30,11 @@ def get_face(bgr, logger):
 	greyscale = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
 	
 	faces = face_cascade.detectMultiScale(greyscale)
-	log_faces(bgr, faces, logger)
 	
 	if len(faces) == 0:
 		raise ValueError('No faces found')
 	
+	log_faces(bgr, faces, logger)
 	# Use largest-area face if multiple are found
 	face = max(faces, key = lambda face: face[2] * face[3])
 	
