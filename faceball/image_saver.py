@@ -26,35 +26,35 @@ def get_rgb(colour_name):
 	r, g, b = colour_name[:2], colour_name[2:4], colour_name[4:]
 	return tuple(int(c, 16) for c in (r, g, b))
 
-def set_background(rgba, background_rgb):
-	"""set_background(rgba, background_rgb) -> rgb
+def set_background(bgra, background_rgb):
+	"""set_background(bgra, background_rgb) -> bgr
 	Fills all transparent pixes with background_rgb and drops alpha channel
-	rgba: OpenCV RGBA image
+	bgra: OpenCV BGRA image
 	background_rgb: (int, int, int) RGB triplet
-	rgb: OpenCV RGB image"""
+	bgr: OpenCV BGR image"""
 	background_bgr = background_rgb[::-1]
-	alpha = rgba[:,:,3] / 255
+	alpha = bgra[:,:,3] / 255
 	
 	for colour in range(0, 3):
-		rgba[:, :, colour] = (
-			alpha * rgba[:, :, colour]
+		bgra[:, :, colour] = (
+			alpha * bgra[:, :, colour]
 			+ (1 - alpha) * background_bgr[colour]
 		)
 	
-	return cv2.cvtColor(rgba, cv2.COLOR_RGBA2RGB)
+	return cv2.cvtColor(bgra, cv2.COLOR_BGRA2BGR)
 
-def save_image(rgba, to_path, background):
-	"""save_image(rgba, to_path, background) -> saved image
+def save_image(bgra, to_path, background):
+	"""save_image(bgra, to_path, background) -> saved image
 	Save image to file
 	Replaces transparent pixels with background colour if background is not None or transparency is unsupported
-	rgba: OpenCV RGBA image
+	bgra: OpenCV BGRA image
 	to_path: path to save to
 	background: string defining background fill, or None"""
 	if background is None and to_path.lower().endswith('.png'):
-		cv2.imwrite(to_path, rgba)
-		return rgba
+		cv2.imwrite(to_path, bgra)
+		return bgra
 	
 	background_rgb = get_rgb(background)
-	rgb = set_background(rgba, background_rgb)
-	cv2.imwrite(to_path, rgb)
-	return rgb
+	bgr = set_background(bgra, background_rgb)
+	cv2.imwrite(to_path, bgr)
+	return bgr

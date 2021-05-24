@@ -19,18 +19,18 @@ def get_facemark():
 		_FACEMARK = facemark
 	return _FACEMARK
 
-def get_face(rgb, logger):
-	"""get_facemark(rgb, logger) -> (face, landmarks)
+def get_face(bgr, logger):
+	"""get_facemark(bgr, logger) -> (face, landmarks)
 	Find face in image and its landmarks
 	Throws if no face is found. Chooses the largest face if multiple are found.
-	rgb: OpenCV RGB-space image
+	bgr: OpenCV BGR-space image
 	logger: HTML image logger
 	face: (x : int, y : int, width : int, height : int) rectangle containing detected face
 	landmarks: 2D np.array of face landmark points"""
-	greyscale = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
+	greyscale = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
 	
 	faces = face_cascade.detectMultiScale(greyscale)
-	log_faces(rgb, faces, logger)
+	log_faces(bgr, faces, logger)
 	
 	if len(faces) == 0:
 		raise ValueError('No faces found')
@@ -38,17 +38,17 @@ def get_face(rgb, logger):
 	# Use largest-area face if multiple are found
 	face = max(faces, key = lambda face: face[2] * face[3])
 	
-	ok, landmarks = get_facemark().fit(rgb, faces = np.array([face]))
+	ok, landmarks = get_facemark().fit(bgr, faces = np.array([face]))
 	
 	return face, landmarks[0][0]
 
-def log_faces(rgb, faces, logger):
-	log_image = rgb.copy()
+def log_faces(bgr, faces, logger):
+	log_image = bgr.copy()
 	for x, y, w, h in faces:
 		cv2.rectangle(log_image, (x, y), (x + w, y + h), (0, 255, 0), 3)
 	
 	# TODO: onerous facemark detection, could remove
-	ok, landmarks = get_facemark().fit(rgb, faces = faces)
+	ok, landmarks = get_facemark().fit(bgr, faces = faces)
 	for marks in landmarks:
 		cv2.face.drawFacemarks(log_image, marks, (255, 255, 255))
 	

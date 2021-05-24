@@ -19,20 +19,20 @@ def faceball(input_image_path, output_image_path, background = None, debug = Fal
 	debug: boolean"""
 	_, image_name = path.split(input_image_path)
 	with Logger(image_name) as logger:
-		rgb = cv2.imread(input_image_path)
+		bgr = cv2.imread(input_image_path)
 		logger.log(
-			'Load original', 'Original', rgb,
+			'Load original', 'Original', bgr,
 			[ 'Read from: ' + input_image_path ]
 		)
 		
-		face, landmarks = get_face(rgb, logger)
+		face, landmarks = get_face(bgr, logger)
 		hull = convex_hull(landmarks)
 		target_circle = get_target_circle(hull)
-		log_face_hull(rgb, landmarks, hull, target_circle, logger)
+		log_face_hull(bgr, landmarks, hull, target_circle, logger)
 		
 		if debug:
-			mark_image(rgb, landmarks, hull, target_circle)
-		warped = warp_poly_to_circle(rgb, hull, target_circle)
+			mark_image(bgr, landmarks, hull, target_circle)
+		warped = warp_poly_to_circle(bgr, hull, target_circle)
 		if debug:
 			mark_target_circle(warped, target_circle)
 		logger.log('Warp to circle', 'Warped', warped)
@@ -49,8 +49,8 @@ def faceball(input_image_path, output_image_path, background = None, debug = Fal
 			[ 'background: {0}'.format(background), output_image_path ]
 		)
 
-def log_face_hull(rgb, landmarks, hull, target_circle, logger):
-	log_image = rgb.copy()
+def log_face_hull(bgr, landmarks, hull, target_circle, logger):
+	log_image = bgr.copy()
 	mark_image(log_image, landmarks, hull, target_circle)
 	logger.log('Find convex hull of face landmarks', 'Landmarks and hull', log_image)
 
