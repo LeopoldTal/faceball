@@ -5,7 +5,8 @@ import numpy as np
 
 # parameters chosen "empirically"
 lightness_exponent = 1.7
-saturation_coeff = .25
+saturation_exponent = 1.9
+saturation_shrink = 0.5 # dark half only
 
 def tint_region(hls, face_mask, vertices, light):
 	"""tint_region(hls, face_mask, vertices, light) -> None
@@ -22,15 +23,18 @@ def tint_region(hls, face_mask, vertices, light):
 	
 	mask = np.bitwise_and(mask, face_mask)
 	
-	lightness = hls[mask == 255,1] / 255
-	if light:
-		new_lightness = 1 - (1 - lightness)**lightness_exponent
-	else:
-		new_lightness = lightness**lightness_exponent
-	hls[mask == 255,1] = 255 * new_lightness
+	hls[mask == 255,1] = scale(hls[mask == 255,1], lightness_exponent, light)
 	
-	target_saturation = 255 * saturation_coeff if light else 0
-	hls[mask == 255,2] = (1 - saturation_coeff) * hls[mask == 255,2] + target_saturation
+	max_saturation = 1 if light else saturation_shrink
+	hls[mask == 255,2] = max_saturation * scale(hls[mask == 255,2], saturation_exponent, light)
+
+def scale(values, exponent, light):
+	norm = values / 255
+	if light:
+		new_values = 1 - (1 - norm)**exponent
+	else:
+		new_values = norm**exponent
+	return 255 * new_values
 
 def mask_face(bgr, target_circle):
 	"""mask_face(bgr, target_circle) -> BGRA image
